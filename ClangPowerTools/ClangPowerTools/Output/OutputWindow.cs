@@ -64,6 +64,8 @@ namespace ClangPowerTools
 
     public void Clear() => mOutputPane.Clear();
 
+    public IVsOutputWindowPane GetPane() => mOutputPane;
+
     #endregion
   }
 }

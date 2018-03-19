@@ -1,4 +1,5 @@
 ﻿using EnvDTE80;
+using Microsoft.VisualStudio.Shell.Interop;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -25,6 +26,8 @@ namespace ClangPowerTools
 
     private List<string> mPCHPaths = new List<string>();
 
+    private IVsOutputWindowPane mOutputWindowPane;
+
     #endregion
 
     #region Properties
@@ -49,6 +52,8 @@ namespace ClangPowerTools
     {
       mDte = aDte;
       mDispatcher = HwndSource.FromHwnd((IntPtr)mDte.MainWindow.HWnd).RootVisual.Dispatcher;
+
+      mOutputWindowPane = new OutputWindow(mDte).GetPane();
     }
 
     #endregion
@@ -131,6 +136,8 @@ namespace ClangPowerTools
 
             if (0 != mMessagesBuffer.Count)
               mMessagesBuffer.Clear();
+
+            //mOutputWindowPane.FlushToTaskList();
 
             SaveErrorsMessages(errors);
           }

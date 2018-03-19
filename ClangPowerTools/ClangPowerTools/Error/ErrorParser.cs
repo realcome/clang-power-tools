@@ -30,13 +30,14 @@ namespace ClangPowerTools
 
       string path = groups[1].Value;
       int.TryParse(groups[3].Value, out int line);
+      int.TryParse(groups[5].Value, out int column);
 
       string categoryAsString = groups[7].Value;
       TaskErrorCategory category = FindErrorCategory(ref categoryAsString);
 
       string clangTidyChecker = groups[10].Value;
 
-      string fullMessage = CreateFullErrorMessage(path, line, categoryAsString, clangTidyChecker, messageDescription);
+      string fullMessage = CreateFullErrorMessage(path, line, column, categoryAsString, clangTidyChecker, messageDescription);
 
       messageDescription = messageDescription.Insert(0, ErrorParserConstants.kClangTag); // Add clang prefix for error list
       aError = new TaskError(path, line, category, messageDescription, fullMessage );
@@ -68,12 +69,12 @@ namespace ClangPowerTools
       return category;
     }
 
-    private string CreateFullErrorMessage(string aPath, int aLine, 
+    private string CreateFullErrorMessage(string aPath, int aLine, int aColumn, 
       string aCategory, string aClangTidyChecker, string aDescription)
     {
-      return string.Format("{0}({1}): {2}{3}: {4}", aPath, aLine, aCategory,
+      return string.Format("{0}({1}): {2}{3}({4}): {5}", aPath, aLine, aCategory,
         (true == string.IsNullOrWhiteSpace(aClangTidyChecker) ? string.Empty : $" {aClangTidyChecker.Trim(new char[] { ' ', '\n', '\r', '\t' })}"),
-        aDescription);
+        aColumn, aDescription);
     }
 
     public string Format(string aMessages, string aReplacement)
