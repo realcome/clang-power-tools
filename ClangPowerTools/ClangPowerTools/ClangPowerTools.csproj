@@ -106,6 +106,9 @@
     </Compile>
     <Compile Include="DialogOptionsModel\ClangOptions.cs" />
     <Compile Include="Convertors\HeaderFiltersConvertor.cs" />
+    <Compile Include="IMyDynamicExtender.cs" />
+    <Compile Include="MyDynamicExtender.cs" />
+    <Compile Include="MyDynamicExtenderProvider.cs" />
     <Compile Include="PCHCleaner.cs" />
     <Compile Include="Handlers\ProjectConfigurationHandler.cs" />
     <Compile Include="RunningDocTableEvents.cs" />

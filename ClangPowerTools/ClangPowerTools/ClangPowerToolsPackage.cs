@@ -71,6 +71,14 @@ namespace ClangPowerTools
 
     #endregion
 
+    private EnvDTE.ObjectExtenders extensionManager = null;
+    private MyDynamicExtenderProvider dynamicExtenderProvider = null;
+    private int dynamicExtenderProviderCookie;
+
+
+
+
+
     #endregion
 
     #region Constructor
@@ -232,6 +240,32 @@ namespace ClangPowerTools
 
         mRunningDocTableEvents.BeforeSave += mTidyCmd.OnBeforeSave;
         mRunningDocTableEvents.BeforeSave += mClangFormatCmd.OnBeforeSave;
+
+
+
+
+
+
+        // get extender manager
+        extensionManager = GetService(typeof(EnvDTE.ObjectExtenders)) as EnvDTE.ObjectExtenders;
+
+
+        if(extensionManager == null )
+          throw new NullReferenceException("GetService failed to get the extender object");
+
+        //create dynamic extender provider instance
+        dynamicExtenderProvider = new MyDynamicExtenderProvider(dte);
+
+        // register dynamic extender provider with extension manager
+        // (replace guid with the proper CATID)
+
+        dynamicExtenderProviderCookie = extensionManager.RegisterExtenderProvider
+          (VSConstants.CATID.VCProjectNode_string, MyDynamicExtenderProvider.DynamicExtenderName, dynamicExtenderProvider);
+
+
+
+
+
       }
       catch (Exception)
       {
@@ -260,6 +294,17 @@ namespace ClangPowerTools
 
       mRunningDocTableEvents.BeforeSave -= mTidyCmd.OnBeforeSave;
       mRunningDocTableEvents.BeforeSave -= mClangFormatCmd.OnBeforeSave;
+
+
+
+
+
+      // unregister dynamic extender provider with extension manager
+      if (extensionManager != null && dynamicExtenderProviderCookie != 0)
+        extensionManager.UnregisterExtenderProvider(dynamicExtenderProviderCookie);
+
+
+
 
       return VSConstants.S_OK;
     }
